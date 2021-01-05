@@ -29,8 +29,11 @@ const pdfConvert = async (appliacntName) => {
     writer.end(); // save changes to the current page
     pdfDoc.pagePushBack(page2); // push dynamic page to pdfDoc.
 
-    // docx to pdf from url
-    // 25kb file
+    // docx to pdf from url tests
+    // 23kb file (no images)
+    // const wordDocPdf = await PDFNet.Convert.office2PDF('https://www.coolfreecv.com/doc/coolfreecv_resume_en_06_n.docx');
+
+    // 72kb file
     // const wordDocPdf = await PDFNet.Convert.office2PDF('https://www.coolfreecv.com/doc/coolfreecv_resume_en_03_n.docx');
     
     // 1mb word doc
@@ -38,14 +41,15 @@ const pdfConvert = async (appliacntName) => {
 
     // 13.51mb word doc
     // const wordDocPdf = await PDFNet.Convert.office2PDF('https://filesamples.com/samples/document/docx/sample4.docx');
+
     // // merge pages. Append wordDocPdf by passing 1 for first page and count for last page.
     // const wordDocPdfPageCount = await wordDocPdf.getPageCount();
     // const pdfDocPageCount = await pdfDoc.getPageCount();
     // pdfDoc.insertPages(pdfDocPageCount + 1, wordDocPdf, 1, wordDocPdfPageCount, PDFNet.PDFDoc.InsertFlag.e_none);
 
-    // test: 5 sample docs at 66.5mb (13.5mb each)
+    // load test to compare to aspose: 5 sample docs at 115kb (23kb each)
     for (let i = 0; i < 5; i++) {
-        const wordDocPdf = await PDFNet.Convert.office2PDF('https://filesamples.com/samples/document/docx/sample4.docx');
+        const wordDocPdf = await PDFNet.Convert.office2PDF('https://www.coolfreecv.com/doc/coolfreecv_resume_en_06_n.docx');
         // merge pages. Append wordDocPdf by passing 1 for first page and count for last page.
         const wordDocPdfPageCount = await wordDocPdf.getPageCount();
         const pdfDocPageCount = await pdfDoc.getPageCount();
