@@ -30,11 +30,27 @@ const pdfConvert = async (appliacntName) => {
     pdfDoc.pagePushBack(page2); // push dynamic page to pdfDoc.
 
     // docx to pdf from url
-    const wordDocPdf = await PDFNet.Convert.office2PDF('https://www.coolfreecv.com/doc/coolfreecv_resume_en_03_n.docx');
-    // merge pages. Append wordDocPdf by passing 1 for first page and count for last page.
-    const wordDocPdfPageCount = await wordDocPdf.getPageCount();
-    const pdfDocPageCount = await pdfDoc.getPageCount();
-    pdfDoc.insertPages(pdfDocPageCount + 1, wordDocPdf, 1, wordDocPdfPageCount, PDFNet.PDFDoc.InsertFlag.e_none);
+    // 25kb file
+    // const wordDocPdf = await PDFNet.Convert.office2PDF('https://www.coolfreecv.com/doc/coolfreecv_resume_en_03_n.docx');
+    
+    // 1mb word doc
+    // const wordDocPdf = await PDFNet.Convert.office2PDF('https://file-examples-com.github.io/uploads/2017/02/file-sample_1MB.docx');
+
+    // 13.51mb word doc
+    // const wordDocPdf = await PDFNet.Convert.office2PDF('https://filesamples.com/samples/document/docx/sample4.docx');
+    // // merge pages. Append wordDocPdf by passing 1 for first page and count for last page.
+    // const wordDocPdfPageCount = await wordDocPdf.getPageCount();
+    // const pdfDocPageCount = await pdfDoc.getPageCount();
+    // pdfDoc.insertPages(pdfDocPageCount + 1, wordDocPdf, 1, wordDocPdfPageCount, PDFNet.PDFDoc.InsertFlag.e_none);
+
+    // test: 5 sample docs at 66.5mb (13.5mb each)
+    for (let i = 0; i < 5; i++) {
+        const wordDocPdf = await PDFNet.Convert.office2PDF('https://filesamples.com/samples/document/docx/sample4.docx');
+        // merge pages. Append wordDocPdf by passing 1 for first page and count for last page.
+        const wordDocPdfPageCount = await wordDocPdf.getPageCount();
+        const pdfDocPageCount = await pdfDoc.getPageCount();
+        pdfDoc.insertPages(pdfDocPageCount + 1, wordDocPdf, 1, wordDocPdfPageCount, PDFNet.PDFDoc.InsertFlag.e_none);
+      }
 
     // set security handler.
     await pdfDoc.initSecurityHandler();
