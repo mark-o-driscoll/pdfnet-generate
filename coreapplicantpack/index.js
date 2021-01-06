@@ -22,12 +22,26 @@ const pdfConvert = async (appliacntName) => {
     element = await eb.createTextBeginWithFont(await PDFNet.Font.create(pdfDoc, PDFNet.Font.StandardType1Font.e_times_roman), 16);
     writer.writeElement(element);
     // write text
-    element = await eb.createNewTextRun(`PDF for Applicant: ${appliacntName}`);
+    element = await eb.createNewTextRun(`Applicant Name: ${appliacntName}`);
     element.setTextMatrixEntries(1, 0, 0, 1, 100, 700); // location on page of text
     gstate = await element.getGState();
     writer.writeElement(element);
     writer.end(); // save changes to the current page
     pdfDoc.pagePushBack(page2); // push dynamic page to pdfDoc.
+
+    let pdfDocPageCount;
+
+    // cover letter
+    const coverletterPdf = await PDFNet.Convert.office2PDF('https://cdn.geckoandfly.com/wp-content/downloads/cover-letter-templates/cover-letter-free-template-03.docx');
+    const coverletterPdfPageCount = await coverletterPdf.getPageCount();
+    pdfDocPageCount = await pdfDoc.getPageCount();
+    pdfDoc.insertPages(pdfDocPageCount + 1, coverletterPdf, 1, coverletterPdfPageCount, PDFNet.PDFDoc.InsertFlag.e_none);
+
+    // cv
+    const cvPdf = await PDFNet.Convert.office2PDF('https://www.coolfreecv.com/doc/coolfreecv_resume_en_03_n.docx');
+    const cvPdfPageCount = await cvPdf.getPageCount();
+    pdfDocPageCount = await pdfDoc.getPageCount();
+    pdfDoc.insertPages(pdfDocPageCount + 1, cvPdf, 1, cvPdfPageCount, PDFNet.PDFDoc.InsertFlag.e_none);
 
     // docx to pdf from url tests
     // 23kb file (no images)
@@ -42,19 +56,19 @@ const pdfConvert = async (appliacntName) => {
     // 13.51mb word doc
     // const wordDocPdf = await PDFNet.Convert.office2PDF('https://filesamples.com/samples/document/docx/sample4.docx');
 
-    // // merge pages. Append wordDocPdf by passing 1 for first page and count for last page.
+    // merge pages. Append wordDocPdf by passing 1 for first page and count for last page.
     // const wordDocPdfPageCount = await wordDocPdf.getPageCount();
     // const pdfDocPageCount = await pdfDoc.getPageCount();
     // pdfDoc.insertPages(pdfDocPageCount + 1, wordDocPdf, 1, wordDocPdfPageCount, PDFNet.PDFDoc.InsertFlag.e_none);
 
     // load test to compare to aspose: 5 sample docs at 115kb (23kb each)
-    for (let i = 0; i < 5; i++) {
-        const wordDocPdf = await PDFNet.Convert.office2PDF('https://www.coolfreecv.com/doc/coolfreecv_resume_en_06_n.docx');
-        // merge pages. Append wordDocPdf by passing 1 for first page and count for last page.
-        const wordDocPdfPageCount = await wordDocPdf.getPageCount();
-        const pdfDocPageCount = await pdfDoc.getPageCount();
-        pdfDoc.insertPages(pdfDocPageCount + 1, wordDocPdf, 1, wordDocPdfPageCount, PDFNet.PDFDoc.InsertFlag.e_none);
-      }
+    // for (let i = 0; i < 5; i++) {
+    //     const wordDocPdf = await PDFNet.Convert.office2PDF('https://www.coolfreecv.com/doc/coolfreecv_resume_en_06_n.docx');
+    //     // merge pages. Append wordDocPdf by passing 1 for first page and count for last page.
+    //     const wordDocPdfPageCount = await wordDocPdf.getPageCount();
+    //     const pdfDocPageCount = await pdfDoc.getPageCount();
+    //     pdfDoc.insertPages(pdfDocPageCount + 1, wordDocPdf, 1, wordDocPdfPageCount, PDFNet.PDFDoc.InsertFlag.e_none);
+    //   }
 
     // set security handler.
     await pdfDoc.initSecurityHandler();
