@@ -23,7 +23,8 @@ const pdfConvert = async (applicant) => {
     // Cover Page. Set Font and font size.
     element = await eb.createTextBeginWithFont(await PDFNet.Font.create(pdfDoc, PDFNet.Font.StandardType1Font.e_times_roman), 16);
     writer.writeElement(element);
-    
+
+    // To-do error checking that required params are there. Otherwise throw an error.
     // Name
     element = await eb.createNewTextRun(`Applicant Name: ${personalInfo.fullName}`);
     element.setTextMatrixEntries(1, 0, 0, 1, 100, 700); // location of text on the page
@@ -80,24 +81,26 @@ const pdfConvert = async (applicant) => {
 
 module.exports = async function (context, req) {
     context.log('Processing a request...');
-    context.log(req.body);
-    context.log(req.body.applicant);
     // const appliacntName = (req.query.name || (req.body && req.body.name));
-    const applicant = req.body && req.body.applicant;
-    if (!applicant) {
+    // To-Do: Error checking for all the relevant info?
+    if (!req.body) {
         // invalid params, pass error.
+        context.res = {
+            status: 400,
+            body: 'Please pass in request body!'
+        };   
+    } else if (!req.body.applicant) {
         context.res = {
             status: 400,
             body: 'Please pass in the applicant details!'
         };   
 
-    }
-    else {    
+    } else { 
+        const applicant = req.body.applicant;
+        context.log(`applicant: ${applicant}`);
+        context.log('inside else, try pdfConvert...');
             try {
-                context.log('inside try...');
-                context.log(`applicant: ${applicant}`);
                const memoryBuffer = await pdfConvert(applicant);
-               context.log(typeof memoryBuffer);
                // to-do if memory buffer is null return an error
                context.res = {
                 // status: 200, /* Defaults to 200 */
