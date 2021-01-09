@@ -240,30 +240,22 @@ module.exports = async function (context, req) {
         const applicant = req.body.applicant;
         context.log(`applicant: ${applicant}`);
         context.log('inside else, try pdfConvert...');
-            try {
-               const memoryBuffer = await pdfConvert(applicant);
-               if (memoryBuffer) {
-                 context.res = {
-                    // status: 200, /* Defaults to 200 */
-                    headers: {
-                        "Content-Type" : "application/pdf"
-                    },
-                    body: memoryBuffer
-                };
-               } else {
-                // error with pdf generation.
-                context.res = {
-                    status: 400,
-                    body: 'Applicant PDF generation returned null. See logs/insights for more info'
-                }; 
-               }
-            } catch (error) {
-                context.log(error);
-                // error with pdf generation.
-                context.res = {
-                    status: 400,
-                    body: 'Error creating the applicant PDF. See logs/insights for more info'
-                };  
-            }
+        try {
+            const memoryBuffer = await pdfConvert(applicant);
+            context.res = {
+            // status: 200, /* Defaults to 200 */
+            headers: {
+                "Content-Type" : "application/pdf"
+            },
+            body: memoryBuffer
+            };
+        } catch (error) {
+            context.log(error);
+            // error with pdf generation.
+            context.res = {
+                status: 400,
+                body: 'Error creating the applicant PDF. See logs/insights for more info'
+            };  
+        }
     }
 }
